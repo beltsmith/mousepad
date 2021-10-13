@@ -101,51 +101,66 @@ module platform(size) {
   y = diameter * 2;
   x = width / 2;
 
-  translate([0,-platform_depth,0]) {
+  translate([0,-platform_offset,0]) {
+    translate([0,-platform_depth,0]) {
+      linear_extrude(height=height)
+        hull() {
+        translate([radius - x, 0, 0])
+          circle(r=radius);
+
+        translate([x - radius, 0, 0])
+          circle(r=radius);
+
+        translate([radius - x, platform_depth, 0])
+          circle(r=radius);
+
+        translate([x - radius, platform_depth, 0])
+          circle(r=radius);
+      }
+
+    }
+
     linear_extrude(height=height)
       hull() {
+      // place 4 circles in the corners, with the given radius
       translate([radius - x, 0, 0])
         circle(r=radius);
 
       translate([x - radius, 0, 0])
         circle(r=radius);
 
-      translate([radius - x, platform_depth, 0])
+      translate([0, y-(radius/2), 0])
         circle(r=radius);
 
-      translate([x - radius, platform_depth, 0])
-        circle(r=radius);
     }
-
-  }
-
-  linear_extrude(height=height)
-    hull() {
-    // place 4 circles in the corners, with the given radius
-    translate([radius - x, 0, 0])
-      circle(r=radius);
-
-    translate([x - radius, 0, 0])
-      circle(r=radius);
-
-    translate([0, y-(radius/2), 0])
-      circle(r=radius);
-
   }
 }
 
 module hole(d, h) {
-  cylinder(h=h*3, r = d/2, center = true);
+  cylinder(h=h, r = d/2);
 }
-
-platform_depth = 200;
-platform_height = 20;
-platform_width = 350;
 
 mount_diameter = 30;
 mount_radius = mount_diameter / 2;
 
-difference() {
-  platform([platform_width, mount_diameter, platform_height, platform_depth]);
-  translate([0,mount_diameter/2, 0]) hole(mount_diameter, platform_height);
+platform_depth = 175;
+connector_height = 24;
+platform_height = 8;
+platform_width = 350;
+
+platform_offset = mount_diameter;
+
+module mount_cylinder(d, h) {
+  difference() {
+    hole(d + 6, h);
+    translate([0,0,-1]) hole(d, h + 5);
+  }
+}
+
+union() {
+  difference() {
+    platform([platform_width, mount_diameter, platform_height, platform_depth]);
+    translate([0,mount_diameter/2, 0]) hole(mount_diameter, platform_height);
+  }
+  translate([0,mount_diameter/2, 0]) mount_cylinder(mount_diameter, connector_height);
 }
