@@ -1,2 +1,6 @@
 /*.stl
 /*.3mf
+/target/
+/.lsp/
+/.lein-repl-history
+/.clj-kondo/
