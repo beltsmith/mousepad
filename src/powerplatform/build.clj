@@ -19,5 +19,4 @@
 
 (defn build [& {:keys [debug] :or {debug false}}]
   (print-sep)
-  (spit-scad platform "powerplatform" :debug debug)
-  (spit-scad keytray-cutout "keytraycutout" :debug debug))
+  (spit-scad platform "powerplatform" :debug debug))
